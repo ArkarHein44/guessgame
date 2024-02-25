@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guess Game</title>
+    <style>
+        body{
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            overflow: hidden;
+
+            font-family: sans-serif;
+            background-color: #6a1d88;
+        }
+
+        .container{
+            width: 400px;
+            height: 300px;
+            background-color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+           border-radius: 10px;
+           box-shadow: 10px 10px 10px #0e0013;
+        }
+
+        .form-control{
+            width: 190px;
+            border-style: solid;
+            outline: none;
+            padding: 10px;
+           
+
+            border-radius: 5px;
+        }
+        .btn{
+            width: 80px;
+            border-style: solid;
+            outline: none;
+            padding: 10px;
+
+            border-radius: 5px;
+        }
+        .msg{
+            width: 300px;
+            height: 100px;
+
+            background-color: #e9ba54;
+
+            margin-top: 10px;
+
+            border-radius: 5px;
+        }
+
+        .msg span{
+            display: block;
+            padding: 5px;
+        }
+        h1{
+            text-align: center;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="gameui">
+
+        <h1>Number Guess</h1>
+
+        <p>Guess a number between <span class="minnum">00</span> to <span class="maxnum">00</span></p>
+
+        <form action="" id="gameform" class="gameform">
+
+            <div class="form-group">
+                <input type="number" id="guessnumber" class="form-control" placeholder="Enter your guess number..." autofocus/>
+                <input type="submit" id="btn" class="btn"/>
+
+            </div>
+            <div class="msg">
+            <span class="message1"></span>
+            <span class="message2"></span>
+            </div>
+        </form>
+    </div>
+    </div>
+    <script>
+        //get from UI 
+        const   minnum = document.querySelector('.minnum'),
+                maxnum = document.querySelector(".maxnum"),
+                getinput = document.querySelector("#guessnumber"),
+                getbtn = document.querySelector(".btn"),
+                getmsg1 = document.querySelector(".message1"),
+                getmsg2 = document.querySelector(".message2"),
+                getgameform = document.getElementById("gameform");
+                
+        // set min and max value
+        const   min = 1,
+                max = 20;
+        
+        //generate random number for no float value
+        function randomnum(){
+            getrdm = Math.floor(Math.random()*(max-min)+min);
+            return getrdm;
+        }
+        
+        //set generated random num as wining number
+        const winingnum = randomnum();
+        console.log(winingnum);
+
+        // min num and max num sent to UI
+        minnum.textContent = min;
+        maxnum.textContent = max;
+
+        //set chance to play game
+        let gameleft = 5;
+
+        function setmsg1 (msg,color){
+            getmsg1.textContent = msg;
+            getmsg1.style.color = color;
+        };
+
+        function setmsg2 (msg,color){
+            getmsg2.textContent = msg;
+            getmsg2.style.color = color;
+
+            setTimeout(function(){
+                getmsg2.textContent = " ";
+            },
+            2000
+            )
+        };
+
+        getbtn.addEventListener('click',function(e){
+            console.log("i am working");
+            let guess = parseInt(getinput.value);
+
+            if (guess < min || guess > max || isNaN(guess)){
+                setmsg2(`Please enter a number between ${min} to ${max}`,"red");
+            }
+            if (guess === winingnum){
+                gameover(true,`${winingnum} is correct!!! You Won. `)
+            }else{
+                gameleft --;
+
+                if (gameleft === 0){
+                    gameover(false,`Game Over,You Lost.The correct number is ${winingnum}`);
+                }else{
+                    getinput.style.borderColor = "red";
+                    setmsg1(`${guess} is not correct, ${gameleft} chance left`,"blue");
+                    getinput.value = "";
+                    getinput.focus();
+                }
+            }
+
+            e.preventDefault();
+        });
+        
+        function gameover(won,msg){
+            let color;
+            won === true ? color = "green" : color = "red";
+
+            getinput.disabled = true;
+            getinput.style.borderColor = color;
+
+            setmsg1(msg,color);
+
+            getbtn.value = "Play Again";
+            getbtn.classList.add("playagain");
+        }
+
+        getgameform.addEventListener('mousedown',function(e){
+            if(e.target.className === "btn playagain"){
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>
